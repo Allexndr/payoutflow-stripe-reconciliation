@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PayoutFlow
 
-## Getting Started
+Stripe payout reconciliation MVP: Connect → Plaid → dashboard with match status and CSV export.
 
-First, run the development server:
+- **Документация для разработки (архитектура, API, данные, деплой):** [docs/README.md](./docs/README.md)
+- **Продуктовое ТЗ:** [docs/TZ.md](./docs/TZ.md)
+- **Stack:** Next.js 16, Tailwind v4, Drizzle + Neon, Auth.js, Stripe, Plaid
+
+## Quick start
 
 ```bash
+npm install
+cp .env.example .env.local
+# Set DATABASE_URL (Neon), AUTH_SECRET, then:
+npx drizzle-kit push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Register at `/register`, then open `/dashboard`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Without Stripe Connect:** demo payouts and demo bank fixtures for matching.
+- **With Stripe:** payouts are loaded into `payouts_cache` from the Stripe API (auto-refresh about every 2 minutes). Matching uses **only** rows in `bank_transactions` from **Plaid** or from a **CSV upload** in Settings (columns: Date, Amount, optional Description).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Analytics:** [Vercel Web Analytics](https://vercel.com/analytics) — enable the Analytics tab on your Vercel project (component is already in `layout.tsx`).
 
-## Learn More
+- **Legal:** `/privacy` and `/terms` — review with counsel before production.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | Description |
+|--------|-------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npx drizzle-kit push` | Apply schema to Postgres |
+| `npx drizzle-kit studio` | Open Drizzle Studio |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Set `AUTH_SECRET`, Stripe Connect `client_id` + redirect URL, and Plaid webhook URLs as in `docs/TZ.md`.
+- Encrypt `plaid_access_token` at rest before going live.
