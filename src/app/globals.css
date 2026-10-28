@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/*
+  PayoutFlow — light, Stripe-adjacent clarity + unique violet–teal pairing.
+  Rich whites (#f6f9fc canvas, #fff cards), no flat #fff page-wide.
+*/
+:root {
+  /* Surfaces */
+  --canvas: #f6f9fc;
+  --canvas-subtle: #eef2f7;
+  --surface: #ffffff;
+  --surface-elevated: #f8fafc;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.14);
+  /* Brand: confident violet (Stripe-family) + teal for “money / match” */
+  --primary: #5e5aed;
+  --primary-hover: #4d49d4;
+  --primary-muted: rgba(94, 90, 237, 0.1);
+  --accent: #0d9488;
+  --accent-soft: rgba(13, 148, 136, 0.1);
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #e11d48;
+  --text: #1a1f36;
+  --muted: #5e6a7c;
+  --ring: rgba(94, 90, 237, 0.35);
+  /* Hero mesh (aurora-lite): indigo → sky → rose wash */
+  --mesh-1: rgba(99, 91, 255, 0.14);
+  --mesh-2: rgba(56, 189, 248, 0.12);
+  --mesh-3: rgba(251, 113, 133, 0.08);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-subtle: var(--canvas-subtle);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Soft aurora behind hero — static, respects reduced motion */
+.pf-mesh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.pf-mesh::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 85%;
+  background: radial-gradient(
+      ellipse 90% 70% at 15% 20%,
+      var(--mesh-1),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 85% 15%,
+      var(--mesh-2),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 70% 55%,
+      var(--mesh-3),
+      transparent 45%
+    );
+  filter: blur(0px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pf-mesh::before {
+    opacity: 0.65;
+  }
+}
+
+.pf-section-muted {
+  background: linear-gradient(
+    180deg,
+    var(--canvas-subtle) 0%,
+    var(--canvas) 100%
+  );
+}
+
+/* Focus — keyboard UX */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
